@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {{template "general/header"}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .group:hover .group-hover\:flex {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Component Start -->
+    <div
+        class="flex flex-col w-screen h-screen overflow-auto text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+        <div class="flex items-center flex-shrink-0 w-full h-16 px-10 bg-white bg-opacity-75">
+            <svg class="w-8 h-8 text-indigo-600 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+            <input
+                class="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring"
+                type="search" placeholder="Search for anything…">
+            <div class="ml-10">
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700" href="#">Projects</a>
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700" href="#">Team</a>
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700" href="#">Activity</a>
+            </div>
+            <a href="/logout"
+                class="flex items-center justify-center ml-auto overflow-hidden cursor-pointer text-sm font-semibold text-gray-600 hover:text-indigo-700">
+                Logout
+            </a>
+        </div>
+        <div class="px-10 mt-6">
+            <h1 class="text-2xl font-bold">Kanban App</h1>
+        </div>
+
+        <!-- Container kanban -->
+        <div class="flex flex-grow px-10 mt-4 space-x-6 overflow-auto">
+
+            <!-- Kanban Backlog -->
+            {{range $value := .categories}}
+            <div class="flex flex-col flex-shrink-0 w-72">
+                <div class="flex items-center flex-shrink-0 h-10 px-2">
+                    <span class="block text-sm font-semibold">{{$value.Type}}</span>
+                    <!-- ADD Task -->
+                    <div
+                        class="flex items-center justify-center w-6 h-6 ml-auto text-indigo-500 rounded hover:bg-indigo-500 hover:text-indigo-100">
+                        <a href="/task/add?category={{$value.ID}}">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <!-- Remove Category -->
+                    <div class="flex items-center flex-shrink-0 h-10 px-2">
+                        <button
+                            class="flex items-center justify-center w-6 h-6 ml-auto text-indigo-500 rounded hover:bg-indigo-500 hover:text-indigo-100">
+                            <a href="/category/delete?category_id={{$value.ID}}">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12">
+                                    </path>
+                                </svg>
+                            </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col pb-2 overflow-auto">
+                    {{range $taskValue := $value.Tasks}}
+                    <!-- Card Kanban Backlog -->
+                    <div class="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100"
+                        draggable="true">
+
+                        <!-- Title Task -->
+                        <h1 class="flex items-center h-6 px-3 text-xl font-semibold text-yellow-500 bg-yellow-100">
+                            {{$taskValue.Title}}
+                        </h1>
+
+                        <!-- Description Task -->
+                        <h4 class="mt-3 text-sm font-medium">
+                            {{$taskValue.Description}}
+                        </h4>
+                        <div class="flex items-center w-full mt-3 text-xs font-medium text-gray-400">
+                            <div class="flex items-center">
+                                <a href="/task/update?task_id={{$taskValue.ID}}">
+                                    <button type="button"
+                                        class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                                        Update
+                                    </button>
+                                </a>
+                            </div>
+
+                            <!-- Delete Task -->
+                            <div class="relative flex items-center ml-4">
+                                <a href="/task/delete?task_id={{$taskValue.ID}}">
+                                    <button type="button"
+                                        class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                                        Delete
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+                
+            </div>
+            {{end}}
+
+            <div class="flex flex-col flex-shrink-0 w-72">
+                <div class="flex items-center flex-shrink-0 h-10 px-2">
+                    <a href="/category/add">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Add Category
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 w-6"></div>
+        </div>
+    </div>
+    <!-- Component End -->
+</body>
+
+</html>
